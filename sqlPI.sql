@@ -332,3 +332,27 @@ JOIN questao
 JOIN upload
 	ON upload.id_questao = questao.id_questao
 WHERE resposta.id_tentativa = 1;
+-- ============================== Select Estrutura do Tabuleiro ==============================
+SELECT 
+    s.id_secao,
+    s.titulo_secao,
+    s.descricao_secao,
+    c.id_casa,
+    c.titulo_casa,
+    c.data_limite_casa,
+    t.id_tarefa,
+    t.titulo_tarefa,
+    t.prazo_tarefa,
+    IF(COUNT(DISTINCT ten.id_tentativa) > 0, 1, 0) AS tarefa_concluida
+FROM secao s
+LEFT JOIN casa c ON s.id_secao = c.id_secao
+LEFT JOIN tarefa t ON c.id_casa = t.id_casa
+LEFT JOIN tentativa ten ON t.id_tarefa = ten.id_tarefa 
+    AND ten.id_usuario = 1 
+    AND ten.status_tentativa = 'concluida'
+GROUP BY 
+    s.id_secao, c.id_casa, t.id_tarefa
+ORDER BY 
+    s.id_secao ASC, 
+    c.id_casa ASC, 
+    t.prazo_tarefa ASC;
