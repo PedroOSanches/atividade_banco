@@ -54,7 +54,7 @@ INSERT INTO turma (cod_turma) VALUES ('T00');
 
 SET @ultimo_id_turma = LAST_INSERT_ID();
 
-INSERT INTO subturma (cod_subtuma) VALUES ('SUB00');
+INSERT INTO subturma (cod_subturma) VALUES ('SUB00');
 
 SET @ultimo_id_subturma = LAST_INSERT_ID();
 
@@ -63,7 +63,7 @@ INSERT INTO
         id_turma,
         id_subturma,
         id_curso,
-        semestre_id_semestre
+        semestre_turma_subturma
     )
 VALUES (
         @ultimo_id_turma,
@@ -184,3 +184,51 @@ VALUES (
     );
 
 COMMIT;
+
+
+-- ============================== Transacao Registro de Tentativa Realizada ==============================
+BEGIN;
+
+INSERT INTO tentativa(
+                      status_tentativa,
+                      data_tentativa,
+                      id_usuario,
+                      id_tarefa
+) VALUES ('concluida',
+          '2026-06-05',
+          1,
+          1
+         );
+SET @tentativa_gerada = LAST_INSERT_ID();
+SAVEPOINT tentativa;
+
+INSERT INTO resposta(id_tentativa, id_questao) VALUES(@tentativa_gerada, 1);
+SET @resposta_gerada = LAST_INSERT_ID();
+SAVEPOINT resposta;
+
+-- ============================== Resposta Alternativa ==============================
+INSERT INTO resposta_alternativa(id_resposta, id_alternativa) VALUES(@resposta_gerada, 1);
+
+-- ============================== Resposta Dissertativa ==============================
+INSERT INTO resposta_dissertativa(
+                                  id_resposta,
+                                  resposta
+) VALUES(
+         @resposta_gerada,
+         'Resposta Aluno'
+        );
+-- ============================== Resposta Upload ==============================
+INSERT INTO resposta_upload(
+                            id_resposta,
+                            arquivo_resposta
+) VALUES(
+         @resposta_gerada, 'TTT01_nomeArquivo_nomeAluno.extensao'
+        );
+
+commit;
+
+-- ============================== Registro Nova Secao do Tabuleiro ==============================
+INSERT INTO secao(titulo_secao, descricao_secao) VALUES('Explorador', 'Descricao')
+
+-- ============================== Registro Nova Casa ==============================
+INSERT INTO casa(id_secao, titulo_casa, data_limite_casa) VALUES (1, 'Titulo Casa', '2026-06-05')
