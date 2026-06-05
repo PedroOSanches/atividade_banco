@@ -246,3 +246,87 @@ FROM (
     FROM tentativa
     WHERE id_usuario = 16
 ) resultado;
+
+-- ============================== Select para popular Tarefa do Aluno ==============================
+SELECT
+    t.id_tarefa,
+    t.titulo_tarefa,
+    t.prazo_tarefa,
+    c.titulo_casa,
+    c.data_limite_casa,
+    s.titulo_secao,
+    crs.nome_curso
+FROM turma_usuario tu
+JOIN turma_subturma ts
+    ON tu.id_turma_subturma = ts.id_turma_subturma
+JOIN curso crs
+    ON ts.id_curso = crs.id_curso
+JOIN casa c
+    ON c.id_secao = s.id_secao
+JOIN tarefa t
+    ON t.id_casa = c.id_casa
+WHERE tu.id_usuario = 1
+ORDER BY t.prazo_tarefa;
+
+-- ============================== Select para Popular Corrige Tarefa ==============================
+SELECT
+    u.nome_usuario,
+    u.sobrenome_usuario,
+    ten.id_tentativa,
+    ten.status_tentativa,
+    ten.data_tentativa,
+    q.enunciado_questao,
+    q.tipo_questao,
+    r.id_resposta,
+    r.nota_resposta,
+    r.feedback_resposta
+FROM tentativa ten
+JOIN usuario u
+    ON ten.id_usuario = u.id_usuario
+JOIN resposta r
+    ON r.id_tentativa = ten.id_tentativa
+JOIN questao q
+    ON r.id_questao = q.id_questao
+WHERE ten.id_tarefa = 1
+ORDER BY ten.id_tentativa, q.id_questao;
+
+-- ============================== Select para Popular Corrige Tarefa (Alternativa) ==============================
+SELECT
+    r.id_resposta,
+    a.texto_alternativa,
+    a.correta
+FROM resposta r
+JOIN resposta_alternativa ra
+    ON ra.id_resposta = r.id_resposta
+JOIN alternativa a
+    ON ra.id_alternativa = a.id_alternativa
+WHERE r.id_tentativa = 1;
+
+-- ============================== Select para Popular Corrige Tarefa (Dissertativa) ==============================
+SELECT
+    r.id_resposta,
+    rd.resposta AS texto_resposta_aluno,
+    d.resposta_modelo_dissertativa
+FROM resposta r
+JOIN resposta_dissertativa rd
+    ON rd.id_resposta = r.id_resposta
+JOIN questao q
+    ON r.id_questao = q.id_questao
+JOIN dissertativa d
+    ON d.id_questao = q.id_questao
+WHERE r.id_tentativa = 1;
+
+-- ============================== Select para Popular Corrige Tarefa (Upload) ==============================
+SELECT
+    r.id_resposta,
+    ru.arquivo_resposta,
+    up.titulo_upload,
+    up.arquivo_modelo_upload
+FROM resposta r
+JOIN resposta_upload ru
+    ON ru.id_resposta = r.id_resposta
+JOIN questao q
+    ON r.id_questao = q.id_questao
+JOIN upload up
+    ON up.id_questao = q.id_questao
+WHERE r.id_tentativa = 1;
