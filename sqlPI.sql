@@ -246,3 +246,35 @@ FROM (
     FROM tentativa
     WHERE id_usuario = 16
 ) resultado;
+
+-- ============================== Select Lista de Turmas ==============================
+SELECT
+    t.id_turma,
+    t.cod_turma,
+    st.cod_subturma,
+    c.nomecurso,
+    s.numero_semestre
+FROM
+    turma t
+        INNER JOIN turma_subturma ts ON t.id_turma = ts.id_turma
+        INNER JOIN subturma st       ON ts.id_subturma = st.id_subturma
+        INNER JOIN curso c           ON ts.id_curso = c.id_curso
+        INNER JOIN semestre s        ON ts.semestre_id_semestre = s.id_semestre
+GROUP BY
+    t.id_turma, t.cod_turma, st.cod_subturma, c.nomecurso, s.numero_semestre;
+
+-- ============================== Select Lista de Alunos na Turma ==============================
+SELECT
+    u.id_usuario,
+    u.nome_usuario,
+    u.sobrenome_usuario,
+    u.username_usuario
+FROM
+    usuario u
+        INNER JOIN
+    turma_subturma tst ON u.id_usuario = tst.id_usuario
+WHERE
+    tst.id_turma = 1
+  AND tst.id_subturma = 1
+  AND tst.id_curso = 1
+  AND tst.semestre_id_semestre = 1;
