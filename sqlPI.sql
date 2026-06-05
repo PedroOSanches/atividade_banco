@@ -247,86 +247,88 @@ FROM (
     WHERE id_usuario = 16
 ) resultado;
 
--- ============================== Select para popular Tarefa do Aluno ==============================
+-- ============================== Select para Popular Tarefa do Aluno ==============================
 SELECT
-    t.id_tarefa,
-    t.titulo_tarefa,
-    t.prazo_tarefa,
-    c.titulo_casa,
-    c.data_limite_casa,
-    s.titulo_secao,
-    crs.nome_curso
-FROM turma_usuario tu
-JOIN turma_subturma ts
-    ON tu.id_turma_subturma = ts.id_turma_subturma
-JOIN curso crs
-    ON ts.id_curso = crs.id_curso
-JOIN casa c
-    ON c.id_secao = s.id_secao
-JOIN tarefa t
-    ON t.id_casa = c.id_casa
-WHERE tu.id_usuario = 1
-ORDER BY t.prazo_tarefa;
+	id_tarefa,
+	titulo_tarefa,
+	prazo_tarefa,
+	titulo_casa,
+	data_limite_casa,
+	titulo_secao,
+	nome_curso
+FROM turma_usuario
+JOIN turma_subturma
+	ON turma_usuario.id_turma_subturma = turma_subturma.id_turma_subturma
+JOIN curso
+	ON turma_subturma.id_curso = curso.id_curso
+JOIN secao
+	ON secao.id_secao = secao.id_secao
+JOIN casa
+	ON casa.id_secao = secao.id_secao
+JOIN tarefa
+	ON tarefa.id_casa = casa.id_casa
+WHERE turma_usuario.id_usuario = 1
+ORDER BY prazo_tarefa;
 
 -- ============================== Select para Popular Corrige Tarefa ==============================
 SELECT
-    u.nome_usuario,
-    u.sobrenome_usuario,
-    ten.id_tentativa,
-    ten.status_tentativa,
-    ten.data_tentativa,
-    q.enunciado_questao,
-    q.tipo_questao,
-    r.id_resposta,
-    r.nota_resposta,
-    r.feedback_resposta
-FROM tentativa ten
-JOIN usuario u
-    ON ten.id_usuario = u.id_usuario
-JOIN resposta r
-    ON r.id_tentativa = ten.id_tentativa
-JOIN questao q
-    ON r.id_questao = q.id_questao
-WHERE ten.id_tarefa = 1
-ORDER BY ten.id_tentativa, q.id_questao;
+	nome_usuario,
+	sobrenome_usuario,
+	id_tentativa,
+	status_tentativa,
+	data_tentativa,
+	enunciado_questao,
+	tipo_questao,
+	id_resposta,
+	nota_resposta,
+	feedback_resposta
+FROM tentativa
+JOIN usuario
+	ON tentativa.id_usuario = usuario.id_usuario
+JOIN resposta
+	ON resposta.id_tentativa = tentativa.id_tentativa
+JOIN questao
+	ON resposta.id_questao = questao.id_questao
+WHERE tentativa.id_tarefa = 1
+ORDER BY id_tentativa, id_questao;
 
 -- ============================== Select para Popular Corrige Tarefa (Alternativa) ==============================
 SELECT
-    r.id_resposta,
-    a.texto_alternativa,
-    a.correta
-FROM resposta r
-JOIN resposta_alternativa ra
-    ON ra.id_resposta = r.id_resposta
-JOIN alternativa a
-    ON ra.id_alternativa = a.id_alternativa
-WHERE r.id_tentativa = 1;
+	id_resposta,
+	texto_alternativa,
+	correta
+FROM resposta
+JOIN resposta_alternativa
+	ON resposta_alternativa.id_resposta = resposta.id_resposta
+JOIN alternativa
+	ON resposta_alternativa.id_alternativa = alternativa.id_alternativa
+WHERE resposta.id_tentativa = 1;
 
 -- ============================== Select para Popular Corrige Tarefa (Dissertativa) ==============================
 SELECT
-    r.id_resposta,
-    rd.resposta AS texto_resposta_aluno,
-    d.resposta_modelo_dissertativa
-FROM resposta r
-JOIN resposta_dissertativa rd
-    ON rd.id_resposta = r.id_resposta
-JOIN questao q
-    ON r.id_questao = q.id_questao
-JOIN dissertativa d
-    ON d.id_questao = q.id_questao
-WHERE r.id_tentativa = 1;
+	id_resposta,
+	resposta AS texto_resposta_aluno,
+	resposta_modelo_dissertativa
+FROM resposta
+JOIN resposta_dissertativa
+	ON resposta_dissertativa.id_resposta = resposta.id_resposta
+JOIN questao
+	ON resposta.id_questao = questao.id_questao
+JOIN dissertativa
+	ON dissertativa.id_questao = questao.id_questao
+WHERE resposta.id_tentativa = 1;
 
 -- ============================== Select para Popular Corrige Tarefa (Upload) ==============================
 SELECT
-    r.id_resposta,
-    ru.arquivo_resposta,
-    up.titulo_upload,
-    up.arquivo_modelo_upload
-FROM resposta r
-JOIN resposta_upload ru
-    ON ru.id_resposta = r.id_resposta
-JOIN questao q
-    ON r.id_questao = q.id_questao
-JOIN upload up
-    ON up.id_questao = q.id_questao
-WHERE r.id_tentativa = 1;
+	id_resposta,
+	arquivo_resposta,
+	titulo_upload,
+	arquivo_modelo_upload
+FROM resposta
+JOIN resposta_upload
+	ON resposta_upload.id_resposta = resposta.id_resposta
+JOIN questao
+	ON resposta.id_questao = questao.id_questao
+JOIN upload
+	ON upload.id_questao = questao.id_questao
+WHERE resposta.id_tentativa = 1;
