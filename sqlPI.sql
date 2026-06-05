@@ -356,3 +356,15 @@ ORDER BY
     s.id_secao ASC, 
     c.id_casa ASC, 
     t.prazo_tarefa ASC;
+
+-- ============================== Transação Correção de Tarefa pelo Professor ==============================
+BEGIN;
+UPDATE tentativa
+SET 
+    nota_tentativa = 8.5, 
+    status_tentativa = 'corrigida'
+WHERE id_usuario = 1
+  AND id_tarefa = 1; 
+
+
+COMMIT;
