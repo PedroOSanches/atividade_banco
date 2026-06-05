@@ -1,3 +1,4 @@
+-- Active: 1779975789762@@pi-gameficacao-db-pedrohenriqueoliveirasanches3-0b27.i.aivencloud.com@16095@jornadamauadb
 -- ======================= Adicionar Usuario/Aluno ===================== --
 INSERT INTO
     usuario (
@@ -228,7 +229,10 @@ INSERT INTO resposta_upload(
 commit;
 
 -- ============================== Registro Nova Secao do Tabuleiro ==============================
-INSERT INTO secao(titulo_secao, descricao_secao) VALUES('Explorador', 'Descricao')
+INSERT INTO secao(titulo_secao, descricao_secao) VALUES('Explorador', 'Descricao');
 
 -- ============================== Registro Nova Casa ==============================
-INSERT INTO casa(id_secao, titulo_casa, data_limite_casa) VALUES (1, 'Titulo Casa', '2026-06-05')
+INSERT INTO casa(id_secao, titulo_casa, data_limite_casa) VALUES (1, 'Titulo Casa', '2026-06-05');
+
+-- ============================== Select Progresso Aluno ==============================
+SELECT ROUND(COUNT(*) / (SELECT COUNT(*) FROM tarefa), 2) * 100 as 'Progresso Aluno' FROM tentativa WHERE id_usuario = 16;
